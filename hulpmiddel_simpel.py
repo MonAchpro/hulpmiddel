@@ -23,11 +23,10 @@ sites = {"gmail": "https://mail.google.com/mail/u/0/",
          "google": "https://www.google.be/",
          "whatsapp": "https://web.whatsapp.com/"}
 
-def scherm_leeg():
+def clear_screen():
     """
     This function clears the screen.
     """
-    
     if os.name == "nt":
         os.system("cls")
     else:
@@ -45,7 +44,7 @@ def ip_tracker(ip: str):
         response = requests.get(f"http://ip-api.com/json/{ip}")
         data = response.json()
         lat, lon = data['lat'], data['lon']
-        print(f"land: {data['country']}\nregio: {data['regionName']}\nstad: {data['city']}\ngoogle maps: https://maps.google.com/?q={lat},{lon}")
+        print(f"land: {data['country']}\nregio: {data['regionName']}\ncity: {data['city']}\ngoogle maps: https://maps.google.com/?q={lat},{lon}")
     except KeyError:
         print("Er was een error.")
 
@@ -99,14 +98,10 @@ def weer():
     This function prints the weather based on the city that is given.
     """
     try:
-        stad = input("De stad waarvan je het weer wilt weten: ")
-        response = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={stad}")
+        city = input("De stad waarvan je het weer wilt weten: ")
+        response = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={city}")
         data = response.json()
         lat, lon = data['results'][0]['latitude'], data['results'][0]['longitude']
-    except KeyError:
-        print("Er was een error")
-        return
-    try:
         url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&current=temperature_2m,is_day,showers,cloud_cover,wind_speed_10m,wind_direction_10m,pressure_msl,snowfall,precipitation,relative_humidity_2m,apparent_temperature,rain,weather_code,surface_pressure,wind_gusts_10m"
         response = requests.get(url)
         data = response.json()
@@ -141,36 +136,36 @@ def foto():
         print("Er was een error.")
     
 
-def vertaal(tekst: str, resultaat: str="en"):
+def vertaal(text: str, result: str="en"):
     """
     This function translates the given text and returns the translation.
     
-    :param tekst: The text to translate.
-    :type tekst: str
+    :param text: The text to translate.
+    :type text: str
     :param resultaat: The language to translate to.
-    :type resultaat: str
+    :type result: str
     """
     try:
         vertaler = googletrans.Translator()
-        vertaling = vertaler.translate(tekst, dest=resultaat)
-        return f"{tekst} --> {vertaling.text}"
+        vertaling = vertaler.translate(text, dest=result)
+        return f"{text} --> {vertaling.text}"
     except ValueError:
         print("De taal is niet in onze catalogus.")
 
-def recept(eten: str):
+def recept(food: str):
     """
     This function will print the food, ingridients and instructions based on the input.
     
-    :param eten: The food to give its recept
-    :type eten: str
+    :param food: The food to give its recept
+    :type food: str
     """
     
     try:
-        ver_eten = vertaal(eten).replace(f"{eten} --> ", "")
-        url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={ver_eten}"
+        translated_food = vertaal(food).replace(f"{food} --> ", "")
+        url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={translated_food}"
         response = requests.get(url)
         data = response.json()
-        print(f"{eten} \ningredient: ")
+        print(f"{food} \ningredient: ")
         for i in range(20):
             if data['meals'][0][f'strIngredient{i+1}'] != "":
                 print(f"{i+1}: {vertaal(data['meals'][0][f'strIngredient{i+1}'], "nl").replace(f"{data['meals'][0][f'strIngredient{i+1}']} --> ", "")}; aantal: {vertaal(data['meals'][0][f'strMeasure{i+1}'], "nl").replace(f"{data['meals'][0][f'strMeasure{i+1}']} --> ", "")}")
@@ -195,37 +190,34 @@ def telefoonnummer():
     """
     This function will save phone numbers and retrieve them from a json file.
     """
-    actie: int = 0
+    action: int = 0
     try:
         with open("nummer.json", "r") as nummerlijst:
-            nummer_dir = json.load(nummerlijst)
+            number_dir = json.load(nummerlijst)
     except FileNotFoundError:
-        nummer_dir = {}
-    while not (actie in [1,2,3]):
+        number_dir = {}
+    while not (action in [1,2,3]):
         try:
-            actie = int(input("Opslaan(1), lezen(2), verwijderen(3): "))
-            if not (actie in [1,2,3]):
+            action = int(input("Opslaan(1), lezen(2), verwijderen(3): "))
+            if not (action in [1,2,3]):
                 raise ValueError
         except ValueError:
             print("Het nummer moet 1 of 2 zijn.")
-    if actie == 1:
-        naam = input("de naam: ").lower()
-        nummer = input("het nummer: ")
-        nummer_dir[naam] = nummer
-    elif actie == 2:
-        try:
-            naam = input("de naam: ").lower()
-            print(f"{naam}: {nummer_dir[naam]}")
-        except KeyError:
-            print("Deze naam is nog niet opgeslagen.")
-    else:
-        try:
-            naam = input("de naam: ")
-            nummer_dir.pop(naam)
-        except KeyError:
-            print("Deze naam is nog niet opgeslagen.")
+    try:
+        if action == 1:
+            name = input("de naam: ").lower()
+            number = input("het nummer: ")
+            number_dir[name] = number
+        elif action == 2:
+            name = input("de naam: ").lower()
+            print(f"{name}: {number_dir[name]}")
+        else:
+            name = input("de naam: ")
+            number_dir.pop(name)
+    except KeyError:
+        print("Deze naam is nog niet opgeslagen.")
     with open("nummer.json", "w") as nummerlijst:
-        nummerlijst.write(json.dumps(nummer_dir))
+        nummerlijst.write(json.dumps(number_dir))
 
 def reken():
     """
@@ -266,7 +258,7 @@ def verander_kleur():
     This function will change the color of the terminal.
     """
     
-    kleuren = {
+    colors = {
     "zwart": "0",
     "blauw": "1",
     "groen": "2",
@@ -286,12 +278,12 @@ def verander_kleur():
 }
     ai = input("Welke kleur wil je?( lijst voor mogelijkheden) ")
     if ai == "lijst":
-        for element in kleuren:
+        for element in colors:
             print(element)
     else:
-        for element in kleuren:
+        for element in colors:
             if element in ai:
-                os.system(f"color {kleuren[element]}")
+                os.system(f"color {colors[element]}")
                 break
         else:
             print("Niet gevonden.")
@@ -340,7 +332,7 @@ while True:
     if "stop" in ai:
         exit()
     elif ("clear" in ai) or ("cls" in ai):
-        scherm_leeg()
+        clear_screen()
     elif "weer" in ai:
         weer()
     elif "vertaal" in ai:
