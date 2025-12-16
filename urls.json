@@ -1,0 +1,10 @@
+{"discord": "https://stable.dl2.discordapp.net/distro/app/stable/win/x64/1.0.9218/DiscordSetup.exe",
+               "firefox": "https://download-installer.cdn.mozilla.net/pub/firefox/releases/146.0/win32/nl/Firefox%20Installer.exe",
+               "virtualbox": "https://download.virtualbox.org/virtualbox/7.2.4/VirtualBox-7.2.4-170995-Win.exe",
+               "obs": "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-32.0.4-Windows-x64-Installer.exe",
+               "vlc":" https://videolan.nl.mirrors.airvpn.org/vlc/3.0.21/win32/vlc-3.0.21-win32.exe",
+               "google earth": "https://dl.google.com/tag/s/appguid%3D%7B65E60E95-0DE9-43FF-9F3F-4F7D2DFF04B5%7D%26iid%3D%7B65E60E95-0DE9-43FF-9F3F-4F7D2DFF04B5%7D%26lang%3Dnl%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Earth%2520Pro%26needsadmin%3DTrue%26brand%3DGGGE/earth/client/GoogleEarthProSetup.exe",
+               "epic games": "https://epicgames-download1.akamaized.net/Builds/UnrealEngineLauncher/Installers/Windows/EpicInstaller-19.0.0.msi?launcherfilename=EpicInstaller-19.0.0.msi",
+               "spotify": "https://download.scdn.co/SpotifySetup.exe",
+               "steam": "https://cdn.fastly.steamstatic.com/client/installer/SteamSetup.exe"
+               }

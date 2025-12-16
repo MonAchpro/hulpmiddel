@@ -4,24 +4,31 @@ import googletrans
 import json
 import webbrowser
 import cv2
+import asyncio
 
 
-install_url = {"discord": "https://stable.dl2.discordapp.net/distro/app/stable/win/x64/1.0.9218/DiscordSetup.exe",
-               "firefox": "https://download-installer.cdn.mozilla.net/pub/firefox/releases/146.0/win32/nl/Firefox%20Installer.exe",
-               "virtualbox": "https://download.virtualbox.org/virtualbox/7.2.4/VirtualBox-7.2.4-170995-Win.exe",
-               "obs": "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-32.0.4-Windows-x64-Installer.exe",
-               "vlc":" https://videolan.nl.mirrors.airvpn.org/vlc/3.0.21/win32/vlc-3.0.21-win32.exe",
-               "google earth": "https://dl.google.com/tag/s/appguid%3D%7B65E60E95-0DE9-43FF-9F3F-4F7D2DFF04B5%7D%26iid%3D%7B65E60E95-0DE9-43FF-9F3F-4F7D2DFF04B5%7D%26lang%3Dnl%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Earth%2520Pro%26needsadmin%3DTrue%26brand%3DGGGE/earth/client/GoogleEarthProSetup.exe",
-               "epic games": "https://epicgames-download1.akamaized.net/Builds/UnrealEngineLauncher/Installers/Windows/EpicInstaller-19.0.0.msi?launcherfilename=EpicInstaller-19.0.0.msi",
-               "spotify": "https://download.scdn.co/SpotifySetup.exe",
-               "steam": "https://cdn.fastly.steamstatic.com/client/installer/SteamSetup.exe",
-               }
-sites = {"gmail": "https://mail.google.com/mail/u/0/",
-         "youtube": "https://www.youtube.com/",
-         "facebook": "https://www.facebook.com/",
-         "maps": "https://www.google.be/maps",
-         "google": "https://www.google.be/",
-         "whatsapp": "https://web.whatsapp.com/"}
+with open("urls.json", "r") as file:
+    install_url = json.load(file)
+
+
+with open("sites.json", "r") as file:
+    sites = json.load(file)
+
+help_description = ["stop: stopt het programma",
+        "clear of cls: maakt het scherm leeg",
+        "weer: geeft het weer van een stad naar keuze",
+        "vertaal: vertaalt een tekst van keuze naar een taal van keuze",
+        "foto: maakt een foto",
+        "install: installeert een programma", 
+        "reken: voert een bewerking uit",
+        "verander kleur: verandert de kleur van het tekst",
+        "recept: krijg het recept van een gerecht naar keuze",
+        "ip: track een IP adres naar keuze",
+        "telefoonnummer: een adresboek (lees, schrijf en verwijder nummers)",
+        "verklein url: verkleint een url naar keuze",
+        "open SITE: verander site met de naam van een site en het opent die site",
+        "todo: een todo boek",
+        "help: geeft dit help scherm weer" ]
 
 def clear_screen():
     """
@@ -136,7 +143,7 @@ def foto():
         print("Er was een error.")
     
 
-def vertaal(text: str, result: str="en"):
+async def vertaal(text: str, result: str="en"):
     """
     This function translates the given text and returns the translation.
     
@@ -147,7 +154,7 @@ def vertaal(text: str, result: str="en"):
     """
     try:
         vertaler = googletrans.Translator()
-        vertaling = vertaler.translate(text, dest=result)
+        vertaling = await vertaler.translate(text, dest=result)
         return f"{text} --> {vertaling.text}"
     except ValueError:
         print("De taal is niet in onze catalogus.")
@@ -337,11 +344,12 @@ while True:
         weer()
     elif "vertaal" in ai:
         tekst = input("De tekst die je wilt vertalen: ")
-        taal = input("taal waar je in wilt vertalen (leeg is gelijk aan engels)")
+        taal = input("taal waar je in wilt vertalen (leeg is gelijk aan engels): ")
         if taal == "":
-            print(vertaal(tekst))
+            result = asyncio.run(vertaal(tekst))
         else:
-            print(vertaal(tekst, taal))
+            result = asyncio.run(vertaal(tekst, taal))
+        print(result)
     elif "foto" in ai:
         print("Om te stoppen klik op de knop 'q' en om het te accepteren klik op de enter-knop")
         foto()
@@ -360,8 +368,9 @@ while True:
     elif ("telefoon" in ai) and ("nummer" in ai):
         telefoonnummer()
     elif ("klein" in ai) and ("url" in ai):
-        verklein_url()
-    elif ("open" in ai):
+        url = input("Welke url wil je verkleinen (vergeet geen https)? ")
+        verklein_url(url)
+    elif "open" in ai:
         for site in sites:
             if site in ai:
                 webbrowser.open(sites[site])
@@ -370,6 +379,9 @@ while True:
             print("Niet gevonden.")
     elif "todo" in ai:
         todo()
+    elif "help" == ai:
+        for element in help_description:
+            print(element)
     elif ai == "":
         continue
     else:
