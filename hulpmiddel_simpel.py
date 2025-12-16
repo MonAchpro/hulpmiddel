@@ -297,12 +297,16 @@ while True:
         reken()
     elif ("verander" in ai) and ("kleur" in ai):
         verander_kleur()
-    elif "eten" in ai:
+    elif "recept" in ai:
         eten = input("Van welk eten wil je het recept weten? ")
         recept(eten) 
     elif "ip" in ai:
         ip = input("Welk IP-adres wil je tracken? ")
         ip_tracker(ip)
+    elif ("telefoon" in ai) and ("nummer" in ai):
+        telefoonnummer()
+    elif ("klein" in ai) and ("url" in ai):
+        verklein_url()
     else:
         print("Niet gevonden.")
         
