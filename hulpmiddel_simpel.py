@@ -17,17 +17,21 @@ install_url = {"discord": "https://stable.dl2.discordapp.net/distro/app/stable/w
                "steam": "https://cdn.fastly.steamstatic.com/client/installer/SteamSetup.exe",
                }
 
-#Maakt het scherm leeg op basis van een command met de 'os' library
+
 def scherm_leeg():
+    """
+    This function clears the screen.
+    """
+    
     if os.name == "nt":
         os.system("cls")
     else:
         os.system("clear")
 
-#Vindt een locatie op basis van een ip adres met een API
+
 def ip_tracker(ip: str):
     """
-    A function to track Ip's
+    A function to track IP's
     
     :param ip: The IP adres to track
     :type ip: str
@@ -38,13 +42,13 @@ def ip_tracker(ip: str):
     print(f"land: {data['country']}\nregio: {data['regionName']}\nstad: {data['city']}\ngoogle maps: https://maps.google.com/?q={lat},{lon}")
 
 
-#Installeert een file
+
 def install_file(url: str, naam: str):
     """
     A function to install a file based on an url and saves it in a name
     
-    :param url: een url
-    :param naam: de naam om op te slaan
+    :param url: the url
+    :param naam: The name of the file
     """
     response = requests.get(url)
     content = response.content
@@ -53,6 +57,10 @@ def install_file(url: str, naam: str):
 
 
 def installeer():
+    """
+    A function that uses the install_file function to install apps
+    """
+    
     ai = input("Welke app wil je installeren( lijst voor de mogelijkheden)? ")
     if ai == "lijst":
         for element in install_url:
@@ -68,13 +76,21 @@ def installeer():
             print("Not found")
 
 
-#Vind een goede API
+
 def nieuws():
+    """
+    A function that give news
+    """
+    # Still in development. I have to find a good API or site to scrape.
     pass
 
 
-#Vindt de locatie van een stad → gebruikt de locatie om het weer te vinden
+
 def weer():
+    """
+    This function prints the weather based on the city that is given.
+    """
+    
     stad = input("De stad waarvan je het weer wilt weten: ")
     response = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={stad}")
     data = response.json()
@@ -85,6 +101,10 @@ def weer():
     print(f"temperatuur: {data['current']['temperature_2m']} °C\nwindsnelheid: {data['current']['wind_speed_10m']} km/h\nregen: {data['current']['rain']} mm")
 
 def foto():
+    """
+    This function will take a picture and save it if you press enter. If you press q then it will quit without saving.
+    """
+    
     cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
@@ -104,12 +124,28 @@ def foto():
             break
     
 
-def vertaal(tekst, resultaat="en"):
+def vertaal(tekst: str, resultaat: str="en"):
+    """
+    This function translates the given text and returns the translation.
+    
+    :param tekst: The text to translate.
+    :type tekst: str
+    :param resultaat: The language to translate to.
+    :type resultaat: str
+    """
+    
     vertaler = googletrans.Translator()
     vertaling = vertaler.translate(tekst, dest=resultaat)
     return f"{tekst} --> {vertaling.text}"
 
-def recept(eten):
+def recept(eten: str):
+    """
+    This function will print the food, ingridients and instructions based on the input.
+    
+    :param eten: The food to give its recept
+    :type eten: str
+    """
+    
     ver_eten = vertaal(eten).replace(f"{eten} --> ", "")
     url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={ver_eten}"
     response = requests.get(url)
@@ -122,13 +158,21 @@ def recept(eten):
             break
     print(vertaal(data['meals'][0]["strInstructions"], "nl").replace(f"{data['meals'][0]["strInstructions"]} --> ", ""))
 
-def verklein_url(url):
-    #bij het vragen van de url, vergeet niet om te vragen om een url MET HTTP(S)
+def verklein_url(url: str):
+    """
+    This function will print a shorter url for the same domain.
+    
+    :param url: Description
+    :type url: str
+    """
     url = f"https://ulvis.net/api.php?url={url}"
     print(requests.get(url).text)
 
 def telefoonnummer():
-    actie = None
+    """
+    This function will save phone numbers and retrieve them from a json file.
+    """
+    actie: int = 0
     try:
         with open("nummer.json", "r") as nummerlijst:
             nummer_dir = json.load(nummerlijst)
@@ -161,6 +205,10 @@ def telefoonnummer():
         nummerlijst.write(json.dumps(nummer_dir))
 
 def reken():
+    """
+    This is a function to calculate.
+    """
+    
     reken = input("Welke bewerking wilt u doen? \n1) optellen \n2) aftrekken \n3) delen \n4) vermenigvuldigen\n5) machten \n6)vierkantswortel\n")
     if reken == "1":
         getal1 = float(input("Wat is het eerste getal? "))
@@ -186,10 +234,12 @@ def reken():
         getal1 = float(input("Wat is het getal? "))
         print(getal1 ** 0.5)
 
-def open_site(url:str):
-    webbrowser.open(url)
 
 def verander_kleur():
+    """
+    This function will change the color of the terminal.
+    """
+    
     kleuren = {
     "zwart": "0",
     "blauw": "1",
@@ -222,7 +272,7 @@ def verander_kleur():
     
 
 
-while True:
+while True:    
     ai = input("wat wil je doen? ")
     ai = ai.lower()
     if "stop" in ai:
@@ -250,6 +300,9 @@ while True:
     elif "eten" in ai:
         eten = input("Van welk eten wil je het recept weten? ")
         recept(eten) 
+    elif "ip" in ai:
+        ip = input("Welk IP-adres wil je tracken? ")
+        ip_tracker(ip)
     else:
         print("Niet gevonden.")
         
