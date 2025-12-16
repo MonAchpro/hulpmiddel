@@ -16,7 +16,12 @@ install_url = {"discord": "https://stable.dl2.discordapp.net/distro/app/stable/w
                "spotify": "https://download.scdn.co/SpotifySetup.exe",
                "steam": "https://cdn.fastly.steamstatic.com/client/installer/SteamSetup.exe",
                }
-
+sites = {"gmail": "https://mail.google.com/mail/u/0/",
+         "youtube": "https://www.youtube.com/",
+         "facebook": "https://www.facebook.com/",
+         "maps": "https://www.google.be/maps",
+         "google": "https://www.google.be/",
+         "whatsapp": "https://web.whatsapp.com/"}
 
 def scherm_leeg():
     """
@@ -36,10 +41,13 @@ def ip_tracker(ip: str):
     :param ip: The IP adres to track
     :type ip: str
     """
-    response = requests.get(f"http://ip-api.com/json/{ip}")
-    data = response.json()
-    lat, lon = data['lat'], data['lon']
-    print(f"land: {data['country']}\nregio: {data['regionName']}\nstad: {data['city']}\ngoogle maps: https://maps.google.com/?q={lat},{lon}")
+    try:
+        response = requests.get(f"http://ip-api.com/json/{ip}")
+        data = response.json()
+        lat, lon = data['lat'], data['lon']
+        print(f"land: {data['country']}\nregio: {data['regionName']}\nstad: {data['city']}\ngoogle maps: https://maps.google.com/?q={lat},{lon}")
+    except KeyError:
+        print("Er was een error.")
 
 
 
@@ -90,38 +98,47 @@ def weer():
     """
     This function prints the weather based on the city that is given.
     """
-    
-    stad = input("De stad waarvan je het weer wilt weten: ")
-    response = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={stad}")
-    data = response.json()
-    lat, lon = data['results'][0]['latitude'], data['results'][0]['longitude']
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&current=temperature_2m,is_day,showers,cloud_cover,wind_speed_10m,wind_direction_10m,pressure_msl,snowfall,precipitation,relative_humidity_2m,apparent_temperature,rain,weather_code,surface_pressure,wind_gusts_10m"
-    response = requests.get(url)
-    data = response.json()
-    print(f"temperatuur: {data['current']['temperature_2m']} °C\nwindsnelheid: {data['current']['wind_speed_10m']} km/h\nregen: {data['current']['rain']} mm")
+    try:
+        stad = input("De stad waarvan je het weer wilt weten: ")
+        response = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={stad}")
+        data = response.json()
+        lat, lon = data['results'][0]['latitude'], data['results'][0]['longitude']
+    except KeyError:
+        print("Er was een error")
+        return
+    try:
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&current=temperature_2m,is_day,showers,cloud_cover,wind_speed_10m,wind_direction_10m,pressure_msl,snowfall,precipitation,relative_humidity_2m,apparent_temperature,rain,weather_code,surface_pressure,wind_gusts_10m"
+        response = requests.get(url)
+        data = response.json()
+        print(f"temperatuur: {data['current']['temperature_2m']} °C\nwindsnelheid: {data['current']['wind_speed_10m']} km/h\nregen: {data['current']['rain']} mm")
+    except KeyError:
+        print("Er was een error")
+        return
 
 def foto():
     """
     This function will take a picture and save it if you press enter. If you press q then it will quit without saving.
     """
-    
-    cap = cv2.VideoCapture(0)
-    while True:
-        ret, frame = cap.read()
-        key = cv2.waitKey(1)
-        cv2.imshow("test", frame)
-        if key == ord('q'):
-            cv2.destroyAllWindows()
-            cap.release()
-            break
-        elif key == 13:
-            cv2.destroyAllWindows()
-            cv2.imwrite(f"{input("Naam van de foto: ")}.jpg", frame)
-            cv2.imshow("foto", frame)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-            cap.release()
-            break
+    try:
+        cap = cv2.VideoCapture(0)
+        while True:
+            ret, frame = cap.read()
+            key = cv2.waitKey(1)
+            cv2.imshow("test", frame)
+            if key == ord('q'):
+                cv2.destroyAllWindows()
+                cap.release()
+                break
+            elif key == 13:
+                cv2.destroyAllWindows()
+                cv2.imwrite(f"{input("Naam van de foto: ")}.jpg", frame)
+                cv2.imshow("foto", frame)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+                cap.release()
+                break
+    except Exception:
+        print("Er was een error.")
     
 
 def vertaal(tekst: str, resultaat: str="en"):
@@ -133,10 +150,12 @@ def vertaal(tekst: str, resultaat: str="en"):
     :param resultaat: The language to translate to.
     :type resultaat: str
     """
-    
-    vertaler = googletrans.Translator()
-    vertaling = vertaler.translate(tekst, dest=resultaat)
-    return f"{tekst} --> {vertaling.text}"
+    try:
+        vertaler = googletrans.Translator()
+        vertaling = vertaler.translate(tekst, dest=resultaat)
+        return f"{tekst} --> {vertaling.text}"
+    except ValueError:
+        print("De taal is niet in onze catalogus.")
 
 def recept(eten: str):
     """
@@ -146,17 +165,20 @@ def recept(eten: str):
     :type eten: str
     """
     
-    ver_eten = vertaal(eten).replace(f"{eten} --> ", "")
-    url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={ver_eten}"
-    response = requests.get(url)
-    data = response.json()
-    print(f"{eten} \ningredient: ")
-    for i in range(20):
-        if data['meals'][0][f'strIngredient{i+1}'] != "":
-            print(f"{i+1}: {vertaal(data['meals'][0][f'strIngredient{i+1}'], "nl").replace(f"{data['meals'][0][f'strIngredient{i+1}']} --> ", "")}; aantal: {vertaal(data['meals'][0][f'strMeasure{i+1}'], "nl").replace(f"{data['meals'][0][f'strMeasure{i+1}']} --> ", "")}")
-        else:
-            break
-    print(vertaal(data['meals'][0]["strInstructions"], "nl").replace(f"{data['meals'][0]["strInstructions"]} --> ", ""))
+    try:
+        ver_eten = vertaal(eten).replace(f"{eten} --> ", "")
+        url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={ver_eten}"
+        response = requests.get(url)
+        data = response.json()
+        print(f"{eten} \ningredient: ")
+        for i in range(20):
+            if data['meals'][0][f'strIngredient{i+1}'] != "":
+                print(f"{i+1}: {vertaal(data['meals'][0][f'strIngredient{i+1}'], "nl").replace(f"{data['meals'][0][f'strIngredient{i+1}']} --> ", "")}; aantal: {vertaal(data['meals'][0][f'strMeasure{i+1}'], "nl").replace(f"{data['meals'][0][f'strMeasure{i+1}']} --> ", "")}")
+            else:
+                break
+        print(vertaal(data['meals'][0]["strInstructions"], "nl").replace(f"{data['meals'][0]["strInstructions"]} --> ", ""))
+    except KeyError:
+        print("Er was een error")
 
 def verklein_url(url: str):
     """
@@ -165,6 +187,7 @@ def verklein_url(url: str):
     :param url: Description
     :type url: str
     """
+
     url = f"https://ulvis.net/api.php?url={url}"
     print(requests.get(url).text)
 
@@ -209,30 +232,33 @@ def reken():
     This is a function to calculate.
     """
     
-    reken = input("Welke bewerking wilt u doen? \n1) optellen \n2) aftrekken \n3) delen \n4) vermenigvuldigen\n5) machten \n6)vierkantswortel\n")
-    if reken == "1":
-        getal1 = float(input("Wat is het eerste getal? "))
-        getal2 = float(input("Wat is het tweede getal? "))
-        print(f"{getal1} + {getal2} = {getal1 + getal2}")
-    elif reken == "2":
-        getal1 = float(input("Wat is het eerste getal? "))
-        getal2 = float(input("Wat is het tweede getal? "))
-        print(f"{getal1} - {getal2} = {getal1 - getal2}")
-    elif reken == "3":
-        getal1 = float(input("Wat is het deeltal? "))
-        getal2 = float(input("Wat is de deler? "))
-        print(f"{getal1} / {getal2} = {getal1/getal2}")
-    elif reken == "4":
-        getal1 = float(input("Wat is het eerste getal? "))
-        getal2 = float(input("Wat is het tweede getal? "))
-        print(f"{getal1} * {getal2} = {getal1 * getal2}")
-    elif reken == "5":
-        getal1 = float(input("Wat is het grondtal? "))
-        getal2 = float(input("Wat is exponent? "))
-        print(getal1 ** getal2)
-    elif reken == "6":
-        getal1 = float(input("Wat is het getal? "))
-        print(getal1 ** 0.5)
+    try:
+        reken = input("Welke bewerking wilt u doen? \n1) optellen \n2) aftrekken \n3) delen \n4) vermenigvuldigen\n5) machten \n6)vierkantswortel\n")
+        if reken == "1":
+            getal1 = float(input("Wat is het eerste getal? "))
+            getal2 = float(input("Wat is het tweede getal? "))
+            print(f"{getal1} + {getal2} = {getal1 + getal2}")
+        elif reken == "2":
+            getal1 = float(input("Wat is het eerste getal? "))
+            getal2 = float(input("Wat is het tweede getal? "))
+            print(f"{getal1} - {getal2} = {getal1 - getal2}")
+        elif reken == "3":
+            getal1 = float(input("Wat is het deeltal? "))
+            getal2 = float(input("Wat is de deler? "))
+            print(f"{getal1} / {getal2} = {getal1/getal2}")
+        elif reken == "4":
+            getal1 = float(input("Wat is het eerste getal? "))
+            getal2 = float(input("Wat is het tweede getal? "))
+            print(f"{getal1} * {getal2} = {getal1 * getal2}")
+        elif reken == "5":
+            getal1 = float(input("Wat is het grondtal? "))
+            getal2 = float(input("Wat is exponent? "))
+            print(getal1 ** getal2)
+        elif reken == "6":
+            getal1 = float(input("Wat is het getal? "))
+            print(getal1 ** 0.5)
+    except ValueError:
+        print("Er was een error")
 
 
 def verander_kleur():
@@ -307,6 +333,15 @@ while True:
         telefoonnummer()
     elif ("klein" in ai) and ("url" in ai):
         verklein_url()
+    elif ("open" in ai):
+        for site in sites:
+            if site in ai:
+                webbrowser.open(sites[site])
+                break
+        else:
+            print("Niet gevonden.")
+    elif ai == "":
+        continue
     else:
         print("Niet gevonden.")
         
