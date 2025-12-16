@@ -295,7 +295,43 @@ def verander_kleur():
                 break
         else:
             print("Niet gevonden.")
+
+
+def todo():
+    if os.path.exists("todo.json"):
+        with open ("todo.json", "r") as file:
+            todo = json.load(file)
+    else:
+        with open("todo.json", "w") as file:
+            todo = {}
+            file.write("{}")
+    keuze = input("Typ 1 voor een nieuwe TODO.\nTyp 2 voor een lijst van TODO.\nTyp 3 om een todo te verwijderen.\nTyp 4 om de status van je todo te veranderen\n")
+    if keuze == "1":
+        naam = input("Wat zal de naam van de nieuwe todo zijn? ").lower()
+        beschrijving = input("Een korte beschrijving: ")
+        todo[naam] = [beschrijving, "ongedaan"]
+    elif keuze == "2":
+        for element in todo:
+            print(f"naam: {element} \nbeschrijving: {todo[element][0]} \nstatus: {todo[element][1]} \n")
+    elif keuze == "3":
+        naam = input("Wat was de naam van de todo? ").lower()
+        try:
+            del todo[naam]
+        except KeyError:
+            print("Deze todo is niet gevonden.")
+    elif keuze == "4":
+        naam = input("Wat was de naam van de todo? ").lower()
+        try:
+            if todo[naam][1] == "gedaan":
+                todo[naam][1] = "ongedaan"
+            else:
+                todo[naam][1] = "gedaan"
+        except KeyError:
+            print("Deze todo bestaat nog niet.")
+    with open("todo.json", "w") as file:
+        json.dump(todo, file)
     
+
 
 
 while True:    
@@ -340,6 +376,8 @@ while True:
                 break
         else:
             print("Niet gevonden.")
+    elif "todo" in ai:
+        todo()
     elif ai == "":
         continue
     else:
