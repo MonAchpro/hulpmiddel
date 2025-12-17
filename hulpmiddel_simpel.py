@@ -5,6 +5,7 @@ import json
 import webbrowser
 import cv2
 import asyncio
+from typing import Literal
 
 
 with open("urls.json", "r") as file:
@@ -330,6 +331,76 @@ def todo():
     with open("todo.json", "w") as file:
         json.dump(todo, file)
     
+def ceasar_cipher(action: Literal['encode', 'decode'], key: int):
+    alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    if action == "encode":
+        if key > 26:
+            key = key % 26
+        text = input("Wat is de tekst die je wilt coderen? ").lower()
+        encoded = ""
+        for letter in text:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                new_index = (index + key) % len(alphabet)
+                encoded += alphabet[new_index]
+            else:
+                encoded += letter
+        print(encoded)
+    else:
+        if key > 26:
+            key = key % 26
+        text = input("Wat is de tekst die je wilt decoderen? ").lower()
+        decoded = ""
+        for letter in text:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                new_index = (index - key) % len(alphabet)
+                decoded += alphabet[new_index]
+            else:
+                decoded += letter
+        print(decoded)
+
+
+
+def expense_tracker():
+    if os.path.exists("expenses.json"):
+        with open("expenses.json") as file:
+            expenses = json.load(file)
+    else:
+        expenses = {}
+    keuze = input("Typ 1 voor een nieuwe uitgave.\nTyp 2 voor een lijst van alle uitgaven.\nTyp 3 om een uitgave te verwijderen.\nTyp 4 om een specifieke uitgave te bekijken. \n")
+    if keuze == "1":
+        try: 
+            naam = input("Wat zal de naam van de nieuwe uitgave zijn? ").lower()
+            categorie = input("Wat is de categorie van deze uitgave (bv. eten, transport, ...): ")
+            datum = input("Wat is de datum van deze uitgave? ")
+            prijs = float(input("Hoeveel koste de uitgave? "))
+            expenses[naam] = [categorie, prijs, datum]
+        except KeyError:
+            print("Deze naam bestaat al.")
+            return
+        except ValueError:
+            print("Schrijf een numerieke waarde voor de prijs.")
+            return
+    elif keuze == "2":
+        for element in expenses:
+            print(f"naam: {element} \ncategorie: {expenses[element][0]} \nprijs: {expenses[element][1]} \ndatum: {expenses[element][2]}")
+    elif keuze == "3":
+        naam = input("Wat was de naam van de uitgave? ").lower()
+        try:
+            del expenses[naam]
+        except KeyError:
+            print("Deze uitgave is niet gevonden.")
+    elif keuze == "4":
+        naam = input("Wat was de naam van de uitgave? ").lower()
+        try:
+            print(f"naam: {naam} \ncategorie: {expenses[naam][0]} \nprijs: {expenses[naam][1]} \ndatum: {expenses[naam][2]}\n")
+        except KeyError:
+            print("Deze uitgave bestaat niet.")
+    with open("expenses.json", "w") as file:
+        json.dump(expenses, file)
+
+    
 
 
 
@@ -362,6 +433,20 @@ while True:
     elif "recept" in ai:
         eten = input("Van welk eten wil je het recept weten? ")
         recept(eten) 
+    elif "ceasar" in ai:
+        try:
+            action = input("Wil je het coderen (1) of decoderen (2): ")
+            key = int(input("Wat is de sleutel? "))
+            if key < 0:
+                raise ValueError
+            if action == "1":
+                ceasar_cipher('encode', key)
+            elif action == "2":
+                ceasar_cipher('decode', key)
+            else:
+                print("Dit was niet 1 van de mogelijkheden.")
+        except ValueError:
+            print("Schrijf een positief nummer.")
     elif "ip" in ai:
         ip = input("Welk IP-adres wil je tracken? ")
         ip_tracker(ip)
@@ -379,6 +464,8 @@ while True:
             print("Niet gevonden.")
     elif "todo" in ai:
         todo()
+    elif "uitgave" in ai:
+        expense_tracker()
     elif "help" == ai:
         for element in help_description:
             print(element)
