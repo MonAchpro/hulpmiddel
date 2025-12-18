@@ -1,86 +1,75 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Hulpmiddel</title>
 </head>
 <body>
-    <header>
-        <h1>Hulpmiddel</h1>
-        <h4>Dit hulpmiddel is een hulpmiddel dat helpt met verschillende dingen.</h4>
-    </header>
-    <section>
-        <h3>Mogelijkheden</h3>
-        <ul>
-            <li>
-                Installeer populaire apss
-            </li>
-            <li>
-                Check het weer van elke stad.
-            </li>
-            <li>
-                Track IP adressen.
-            </li>
-            <li>
-                Maak foto's.
-            </li>
-            <li>
-                Vertaal teksten.
-            </li>
-            <li>
-                Krijg recepten.
-            </li>
-            <li>
-                Verklein urls
-            </li>
-            <li>
-                En nog veel meer...
-            </li>
-        </ul>
-    </section>
-    
-    
-    <section>
-        <h3>Installatie</h3>
-        <ol>
-            <li>
-                Zorg ervoor dat python en pip al geinstalleerd zijn.
-            </li>
-            <li>
-                Ga naar deze url: <a href="https://github.com/MonAchpro/hulpmiddel" target="_blank">https://github.com/MonAchpro/hulpmiddel</a>            
-            </li>
-            <li>
-                Klik op de code knop en dan op downloaden als zip.
-            </li>
-            <li>
-                Pak het zip bestand uit.
-            </li>
-            <li>
-                Ga naar de terminal op de locatie van de uitgepakte map.
-            </li>
-            <li>
-                Voer dit uit: "pip install -r requirements.txt"
-            </li>
-            <li>
-                Open het hulpmiddel_simpel bestand en profiteer!
-            </li>
-        </ul>
-        <p>Voor een lijst van mogelijkheden: typ help.</p>
-    </section>
-
-    <section>
-        <h2>Bewerkbaarheid</h2>
-        <p>Deze code is zo gemaakt zodat alles heel makkelijk te bewerken is.</p>
-        <p>Om extra sites toe te voegen, voeg je het toe aan "sites.json"</p>
-        <p>Om extra download links toe te voegen, voeg je het toe aan "urls.json"</p>
-    </section>
-
-    <section>
-        <h2>Contact</h2>
-        <p>Als er vragen of problemen zijn, vraag ze maar via de Issues tab op github.</p>
-    </section>
-    <footer>
-        <p>Gemaakt door <a href="https://github.com/MonAchpro" target="_blank"w>MonAchpro</a> in 2025</p>
-    </footer>
+<header>
+    <p>Dit is een project geschreven in mijn vrije tijd.</p>
+    <p>Dit project dient om mijn python skills te herhalen en eventueel te verbeteren</p>
+</header>
+<main>
+    <h1>Hulpmiddel</h1>
+    <h3>Beschrijving</h3>
+    <p>Dit programma is een hulpmiddel met verschillende functies, inclusief het weer, vertalen, en meer. <br>Het gebruikt verschillende bibliotheken, zodat de gebruiker verschillende taken kan uitvoeren met de CLI.</p>
+    <hr>
+    <h2>Belangrijke delen</h2>
+    <h3>Geïmporteerde bibliotheken</h3>
+    <ul>
+        <li><strong>requests</strong>: Om met API&#39;s te communiceren.</li>
+        <li><strong>os</strong>: Om met bestanden te werken en het scherm leeg te maken.</li>
+        <li><strong>googletrans</strong>: Om tekst te vertalen.</li>
+        <li><strong>json</strong>: Om json te lezen en schrijven.</li>
+        <li><strong>webbrowser</strong>: Om websites te openen.</li>
+        <li><strong>cv2</strong>: Om foto&#39;s te maken.</li>
+        <li><strong>asyncio</strong>: Dit was nodig om ter vertalen.</li>
+        <li><strong>typing</strong>: Om de functies duidelijker te maken</li>
+    </ul>
+    <h3>Extra bestanden</h3>
+    <ul>
+        <li><strong>urls.json</strong>: Bevat de urls en de naam om apps te installeren. Als je een eigen app toe wilt voegen, dan voeg je het toe in dit formaat: <code>app naam: https://exe-url</code> </li>
+        <li><strong>sites.json</strong>: Bevat de urls en de naam om websites te openen. Als je een eigen website toe wilt voegen, dan voeg je het toe in dit formaat: <code>website naam: https://website-url</code> </li>
+        <li><strong>nummer.json</strong>: Een json bestand dat nummers en namen bevat.</li>
+        <li><strong>todo.json</strong>: Een json bestand om todo&#39;s te volgen.</li>
+        <li><strong>expenses.json</strong>: Een json bestand om uitgavenyy te tracken.</li>
+    </ul>
+    <h3 id="Functies">Functies</h3>
+    <ul>
+        <li><strong>stop</strong>: Dit stopt het programma. Dit is de veiligste weg om het programma te stoppen. </li>
+        <li><strong>clear</strong> of <strong>cls</strong>: Dit maakt het scherm leeg. </li>
+        <li><strong>weer</strong>: Geeft het weer van een stad naar keuze. </li>
+        <li><strong>vertaal</strong>: vertaalt een tekst van keuze naar een taal van keuze </li>
+        <li><strong>foto</strong>: maakt een foto </li>
+        <li><strong>install</strong>: installeert een programma </li>
+        <li><strong>reken</strong>: voert een bewerking uit </li>
+        <li><strong>verander kleur</strong>: verandert de kleur van het tekst </li>
+        <li><strong>recept</strong>: krijg het recept van een gerecht naar keuze </li>
+        <li><strong>ip</strong>: track een IP adres naar keuze </li>
+        <li><strong>telefoonnummer</strong>: een adresboek (lees schrijf en verwijder nummers) </li>
+        <li><strong>verklein url</strong>: verkleint een url naar keuze </li>
+        <li><strong>open site</strong>: verander site met de naam van een site en het opent die site </li>
+        <li><strong>todo</strong>: een todo boek </li>
+        <li><strong>help</strong>: geeft alle commandos en hun uitleg</li>
+    </ul>
+    <h3>Installatie</h3>
+    <ol>
+        <li>Zorg ervoor dat python en pip geinstalleerd is.</li>
+        <li>Ga naar <a href="https://github.com/MonAchpro/hulpmiddel">hulpmiddel</a> en klik op de code knop en dan download ZIP.<ul>
+        <li>Breng het ZIP bestand naar waar je het wilt en pak het uit.</li>
+        <li>Of gebruik git
+            <ul>
+                <li>Open een terminal en schrijf dit <code>git clone https://github.com/MonAchpro/hulpmiddel.git <br>cd hulpmiddel</code></li>
+                <li>Schrijf dit in de terminal: <code>pip install -r requirements.txt</code></li>
+            </ul>
+        </li>
+        <li>Open het python bestand en profiteer.</li>
+    </ol>
+    <h3>Gebruik</h3>
+    <p>Dit programma vraagt je om een actie (kies uit een van deze: <a href="#Functies">hier</a>) en voert een actie uit op basis van de functies.</p>
+</main>
+<footer>
+    Dit programma is gemaakt door MonAchpro in 2025
+</footer>
 </body>
 
 </html> 
